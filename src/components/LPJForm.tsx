@@ -128,7 +128,7 @@ const LPJForm: React.FC = () => {
         total_lpj
       };
 
-      const response = await axios.post('http://localhost:3001/api/generate-lpj', formData, {
+      const response = await axios.post('http://localhost:5000/api/generate-lpj', formData, {
         responseType: 'blob',
       });
       
@@ -197,12 +197,19 @@ const LPJForm: React.FC = () => {
                   <Box>
                     {values.rincianItems.map((item, index) => (
                       <Grid container spacing={2} key={item.id} sx={{ marginBottom: 2 }}>
-                        <Field
-                          as={TextField}
-                          value={item.id}
-                          disabled
-                          sx={{display:'none'}}
-                        />
+                         <Grid item xs={12} md={1}>
+                          <Field
+                            as={TextField}
+                            fullWidth
+                            label="No"
+                            name={`rincianItems.${index}.no`}
+                            value={index + 1}
+                            onChange={(e: any) => {
+                              setFieldValue(`rincianItems.${index}.no`, e.target.value);
+                              setFieldValue(`rincianItems.${index}.id`, e.target.value);
+                            }}
+                          />
+                        </Grid>
                         <Grid item xs={15} md={3}>
                           <Field
                             as={TextField}

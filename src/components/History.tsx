@@ -3,7 +3,7 @@ import {
     Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper
 } from '@mui/material';
 // import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import DownloadIcon from '@mui/icons-material/Download';
+// import DownloadIcon from '@mui/icons-material/Download';
 import LoadingAnimation from './LoadingAnimation';
 import axios from 'axios';
 
@@ -20,24 +20,10 @@ const History: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // const columns: GridColDef[] = [
-    //   { field: 'no_request', headerName: 'No. Request', width:400},
-    //   { field: 'tgl_lpj', headerName: 'Tanggal LPJ', width:400},
-    //   { field: 'actions',
-    //     headerName: 'Aksi',
-    //     width:200,
-    //     renderCell: (params) => (
-    //       <Button onClick={() => handleDownload(params.row.id) }>
-    //         <DownloadIcon />
-    //       </Button>
-    //     )
-    //   }
-    // ]
-
     useEffect(() => {
       const fetchHistory = async () => {
         try {
-          const response = await axios.get('http://localhost:3001/api/lpj-history');
+          const response = await axios.get('http://localhost:5000/api/lpj-history');
           console.log('API Response:', response.data);
 
           if (Array.isArray(response.data)) {
@@ -67,47 +53,47 @@ const History: React.FC = () => {
       fetchHistory();
     }, []);
 
-    const handleDownload = async (id: number) => {
-      try {
-        const response = await fetch(`/api/lpj-history/download/${id}`);
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Download failed: ${errorText}`);
-        }
+    // const handleDownload = async (id: number) => {
+    //   try {
+    //     const response = await fetch(`/api/lpj-history/download/${id}`);
+    //     if (!response.ok) {
+    //       const errorText = await response.text();
+    //       throw new Error(`Download failed: ${errorText}`);
+    //     }
         
-        const contentDisposition = response.headers.get('Content-Disposition');
-        const filenameMatch = contentDisposition && contentDisposition.match(/filename="?(.+)"?/i);
-        const filename = filenameMatch ? filenameMatch[1] : `LPJ-PUM-${id}.pdf` ;
+    //     const contentDisposition = response.headers.get('Content-Disposition');
+    //     const filenameMatch = contentDisposition && contentDisposition.match(/filename="?(.+)"?/i);
+    //     const filename = filenameMatch ? filenameMatch[1] : `LPJ-PUM-${id}.pdf` ;
 
-        const contentLength = response.headers.get('Content-Length');
-        console.log(`Expected file size: ${contentLength} bytes`);
+    //     const contentLength = response.headers.get('Content-Length');
+    //     console.log(`Expected file size: ${contentLength} bytes`);
 
-        const blob = await response.blob();
-        console.log(`Actual downloaded size: ${blob.size} bytes`);
+    //     const blob = await response.blob();
+    //     console.log(`Actual downloaded size: ${blob.size} bytes`);
 
-        if (blob.size === 0) {
-          throw new Error('Downloaded file is empty');
-        }
+    //     if (blob.size === 0) {
+    //       throw new Error('Downloaded file is empty');
+    //     }
 
-        if (contentLength && blob.size !== parseInt(contentLength)) {
-          throw new Error(`File size mismatch. Expected: ${contentLength}, Actual: ${blob.size}`);
-        }
+    //     if (contentLength && blob.size !== parseInt(contentLength)) {
+    //       throw new Error(`File size mismatch. Expected: ${contentLength}, Actual: ${blob.size}`);
+    //     }
         
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        console.log('Download completed successfully');
-      } catch (error) {
-        console.error('Error downloading file:', error);
-        alert('Failed to download item, please try again');
-      }
-    };
+    //     const url = window.URL.createObjectURL(blob);
+    //     const a = document.createElement('a');
+    //     a.style.display = 'none';
+    //     a.href = url;
+    //     a.download = filename;
+    //     document.body.appendChild(a);
+    //     a.click();
+    //     window.URL.revokeObjectURL(url);
+    //     document.body.removeChild(a);
+    //     console.log('Download completed successfully');
+    //   } catch (error) {
+    //     console.error('Error downloading file:', error);
+    //     alert('Failed to download item, please try again');
+    //   }
+    // };
     
   
     if (loading) {
@@ -119,9 +105,9 @@ const History: React.FC = () => {
         <Typography color="error">
             {error}
             <br />
-            <Button variant='contained' size='medium' onClick={() => window.location.reload()}>
+            {/* <Button variant='contained' size='medium' onClick={() => window.location.reload()}>
                 <DownloadIcon />
-            </Button>
+            </Button> */}
         </Typography>
       )
     }
@@ -157,7 +143,7 @@ const History: React.FC = () => {
               <TableRow>
                 <TableCell>No. Request</TableCell>
                 <TableCell>Date</TableCell>
-                <TableCell>Actions</TableCell>
+                {/* <TableCell>Actions</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -165,31 +151,16 @@ const History: React.FC = () => {
                 <TableRow key={item.id}>
                   <TableCell>{item.no_request}</TableCell>
                   <TableCell>{new Date(item.tgl_lpj).toLocaleDateString()}</TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <Button onClick={() => handleDownload(item.id)}>
                       <DownloadIcon />
                     </Button>
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>
           </Table> 
         </TableContainer>
-        {/* <Paper sx={{ width: '100%' }}>  
-          <DataGrid
-            rows={history}
-            columns={columns}
-            sx={{
-              bgcolor: '#fff',
-              '& .MuiDataGrid-cell': {
-                bgcolor: '#fff',
-              },
-              '& .MuiDataGrid-columnHeaders': {
-                bgcolor: '#f5f5f5',
-              }, 
-            }}
-          />
-        </Paper> */}
       </>
     );
   };
