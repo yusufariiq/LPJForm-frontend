@@ -1,11 +1,30 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect} from 'react';
 import { 
-    Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper
+    Box,
+    Button,
+    Container,
+    Paper,
+    Typography,
 } from '@mui/material';
+import { 
+  DataGrid, 
+  GridColDef, 
+  GridToolbarContainer,
+  GridToolbarColumnsButton,
+  GridToolbarFilterButton,
+  GridToolbarExport,
+  GridToolbarDensitySelector,
+} from '@mui/x-data-grid';
 import LoadingAnimation from '../common/LoadingAnimation';
 import axios from 'axios';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';;
 
 const API_URL = import.meta.env.VITE_API_URL;
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 interface LPJHistoryItem {
     id: number;
@@ -19,7 +38,7 @@ const History: React.FC = () => {
     const [history, setHistory] = useState<LPJHistoryItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
+    
     useEffect(() => {
       const fetchHistory = async () => {
         try {
@@ -53,6 +72,45 @@ const History: React.FC = () => {
       fetchHistory();
     }, []);
   
+    const columns: GridColDef[] = [
+      { 
+        field: 'numbering', 
+        headerName: 'No', 
+        width: 70,
+        renderCell: (params) => params.api.getAllRowIds().indexOf(params.id)+1
+      },
+      { field: 'no_request', headerName: 'No. Request', width: 450 },
+      { 
+          field: 'tgl_lpj', 
+          headerName: 'Date', 
+          width: 250,
+          valueFormatter: (params) => {
+            const date = dayjs(params.value).utc();
+            return date.isValid() ? date.format('YYYY/MM/DD') : 'Invalid Date';
+          }
+      },
+      { 
+          field: 'created_at', 
+          headerName: 'Created At', 
+          width: 250,
+          valueFormatter: (params) => {
+            const date = dayjs(params.value).utc();
+            return date.isValid() ? date.format('YYYY/MM/DD HH:mm:ss') : 'Invalid Date';
+          }
+      },
+  ];
+ 
+  function CustomToolbar() {
+    return (
+        <GridToolbarContainer sx={{p:1}}>
+            <GridToolbarColumnsButton />
+            <GridToolbarFilterButton />
+            <GridToolbarDensitySelector />
+            <GridToolbarExport />
+        </GridToolbarContainer>
+    );
+  }
+
     if (loading) {
       return <LoadingAnimation message='Loading LPJ history' />;
     }
@@ -65,52 +123,42 @@ const History: React.FC = () => {
       )
     }
   
-    if (history.length === 0) {
-      return (
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>No</TableCell>
-                <TableCell>No. Request</TableCell>
-                <TableCell>Date</TableCell>
-                <TableCell>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell colSpan={3}>
-                  <Typography display="flex" justifyContent="center" alignItems="center" sx={{marginInline:'auto', marginBlock:2}}> No Data History </Typography>
-                </TableCell>
-              </TableRow>
-             </TableBody>
-          </Table>
-        </TableContainer>
-      )
-    }
-  
     return (
       <> 
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>No</TableCell>
-                <TableCell>No. Request</TableCell>
-                <TableCell>Date</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {history.map((item, index) => (
-                <TableRow key={item.id}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{item.no_request}</TableCell>
-                  <TableCell>{new Date(item.tgl_lpj).toLocaleDateString()}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table> 
-        </TableContainer>
+        <Container>
+          <Box sx={{mb:2}}>
+            <Typography variant="h4" component="h5">
+              LPJ History
+            </Typography>
+          </Box>
+          <Paper variant='outlined' sx={{padding:'20px'}} >
+            <DataGrid
+              rows={history}
+              columns={columns}
+              getRowId={(row) => row.id}
+              slots={{
+                toolbar: CustomToolbar
+              }}
+              initialState={{
+                pagination: {
+                  paginationModel: {page: 0, pageSize: 10},
+                },
+              }}
+              pageSizeOptions={[5,10, 20]}
+              sx={{
+                border: 'none',
+                bgcolor: '#fff',
+                '& .MuiDataGrid-cell': {
+                    bgcolor: '#fff',
+                    border: 'none',
+                },
+                '& .MuiDataGrid-columnHeaders': {
+                    bgcolor: '#f5f5f5',
+                },
+            }}
+            />
+          </Paper>
+        </Container>
       </>
     );
   };
