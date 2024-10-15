@@ -110,8 +110,8 @@ const LPJForm: React.FC = () => {
     setIsLoading(true);
     setLoadingMessage('Generating LPJ document...');
     try {
-      const rincianItems = values.rincianItems.map(item => ({
-        no: item.id,
+      const rincianItems = values.rincianItems.map((item, index) => ({
+        no: index + 1,
         deskripsi_pum: item.deskripsi_pum,
         jumlah_pum: Number(item.jumlah_pum),
         deskripsi_lpj: item.deskripsi_lpj,
@@ -197,16 +197,14 @@ const LPJForm: React.FC = () => {
                   <Box>
                     {values.rincianItems.map((item, index) => (
                       <Grid container spacing={2} key={item.id} sx={{ marginBottom: 2 }}>
-                         <Grid item xs={12} md={1}>
+                        <Grid item xs={12} md={1}>
                           <Field
                             as={TextField}
                             fullWidth
                             label="No"
-                            name={`rincianItems.${index}.no`}
                             value={index + 1}
-                            onChange={(e: any) => {
-                              setFieldValue(`rincianItems.${index}.no`, e.target.value);
-                              setFieldValue(`rincianItems.${index}.id`, e.target.value);
+                            InputProps={{
+                              readOnly: true,
                             }}
                           />
                         </Grid>
