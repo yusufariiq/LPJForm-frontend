@@ -15,6 +15,8 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import axios from 'axios';
 import LoadingAnimation from '../common/LoadingAnimation';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export interface RincianItem {
     id: number;
     deskripsi_pum: string;
@@ -128,7 +130,7 @@ export interface RincianItem {
           total_lpj
         };
   
-        const response = await axios.post('http://localhost:5002/api/generate-lpj', formData, {
+        const response = await axios.post(`${API_URL}/generate-lpj`, formData, {
           responseType: 'blob',
         });
         

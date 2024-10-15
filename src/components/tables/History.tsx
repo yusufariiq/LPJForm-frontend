@@ -5,6 +5,8 @@ import {
 import LoadingAnimation from '../common/LoadingAnimation';
 import axios from 'axios';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 interface LPJHistoryItem {
     id: number;
     no_request: string;
@@ -21,7 +23,7 @@ const History: React.FC = () => {
     useEffect(() => {
       const fetchHistory = async () => {
         try {
-          const response = await axios.get('http://localhost:5002/api/lpj-history');
+          const response = await axios.get(`${API_URL}/lpj-history`);
           console.log('API Response:', response.data);
 
           if (Array.isArray(response.data)) {

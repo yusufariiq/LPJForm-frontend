@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { LPJHistoryItem, FormValues } from '../types';
 
-const API_URL = 'http://localhost:5002/api';
+const API_URL = 'http://localhost:5000/api';
 
 export const fetchLPJHistory = async (): Promise<LPJHistoryItem[]> => {
   const response = await axios.get(`${API_URL}/lpj-history`);
