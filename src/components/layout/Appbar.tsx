@@ -16,8 +16,8 @@ import PostAddIcon from '@mui/icons-material/PostAdd';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import LPJForm from './LPJForm';
-import History from './History';
+import LPJForm from '../forms/LPJForm';
+import History from '../tables/History';
 
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
@@ -39,7 +39,6 @@ export default function Appbar(props: Props) {
   };
 
   const DrawerContent = () => {
-
     return (
       <div>
         <Toolbar sx={{ marginBlock: 2 }}>
@@ -109,7 +108,7 @@ export default function Appbar(props: Props) {
             open={mobileOpen}
             onClose={handleDrawerToggle}
             ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
+              keepMounted: true,
             }}
             sx={{
               display: { xs: 'block', sm: 'none' },
