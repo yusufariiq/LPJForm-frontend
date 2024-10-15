@@ -118,6 +118,7 @@ const History: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>No</TableCell>
                 <TableCell>No. Request</TableCell>
                 <TableCell>Date</TableCell>
                 <TableCell>Actions</TableCell>
@@ -141,14 +142,16 @@ const History: React.FC = () => {
           <Table>
             <TableHead>
               <TableRow>
+                <TableCell>No</TableCell>
                 <TableCell>No. Request</TableCell>
                 <TableCell>Date</TableCell>
                 {/* <TableCell>Actions</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
-              {history.map((item) => (
+              {history.map((item, index) => (
                 <TableRow key={item.id}>
+                  <TableCell>{index + 1}</TableCell>
                   <TableCell>{item.no_request}</TableCell>
                   <TableCell>{new Date(item.tgl_lpj).toLocaleDateString()}</TableCell>
                   {/* <TableCell>
