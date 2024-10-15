@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
     Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Paper
 } from '@mui/material';
-// import { DataGrid, GridColDef } from '@mui/x-data-grid';
-// import DownloadIcon from '@mui/icons-material/Download';
-import LoadingAnimation from './LoadingAnimation';
+import LoadingAnimation from '../common/LoadingAnimation';
 import axios from 'axios';
 
 interface LPJHistoryItem {
@@ -23,7 +21,7 @@ const History: React.FC = () => {
     useEffect(() => {
       const fetchHistory = async () => {
         try {
-          const response = await axios.get('http://localhost:5000/api/lpj-history');
+          const response = await axios.get('http://localhost:5002/api/lpj-history');
           console.log('API Response:', response.data);
 
           if (Array.isArray(response.data)) {
@@ -36,7 +34,7 @@ const History: React.FC = () => {
                 throw new Error('No array found in the response');
             }
           } else {
-            throw new Error(`Unexpected data structure: ${typeof response.data}`, );
+            throw new Error(`Unexpected data structure: ${typeof response.data}`);
           }
         } catch (error) {
             console.error('Error fetching LPJ history:', error);
@@ -52,62 +50,15 @@ const History: React.FC = () => {
   
       fetchHistory();
     }, []);
-
-    // const handleDownload = async (id: number) => {
-    //   try {
-    //     const response = await fetch(`/api/lpj-history/download/${id}`);
-    //     if (!response.ok) {
-    //       const errorText = await response.text();
-    //       throw new Error(`Download failed: ${errorText}`);
-    //     }
-        
-    //     const contentDisposition = response.headers.get('Content-Disposition');
-    //     const filenameMatch = contentDisposition && contentDisposition.match(/filename="?(.+)"?/i);
-    //     const filename = filenameMatch ? filenameMatch[1] : `LPJ-PUM-${id}.pdf` ;
-
-    //     const contentLength = response.headers.get('Content-Length');
-    //     console.log(`Expected file size: ${contentLength} bytes`);
-
-    //     const blob = await response.blob();
-    //     console.log(`Actual downloaded size: ${blob.size} bytes`);
-
-    //     if (blob.size === 0) {
-    //       throw new Error('Downloaded file is empty');
-    //     }
-
-    //     if (contentLength && blob.size !== parseInt(contentLength)) {
-    //       throw new Error(`File size mismatch. Expected: ${contentLength}, Actual: ${blob.size}`);
-    //     }
-        
-    //     const url = window.URL.createObjectURL(blob);
-    //     const a = document.createElement('a');
-    //     a.style.display = 'none';
-    //     a.href = url;
-    //     a.download = filename;
-    //     document.body.appendChild(a);
-    //     a.click();
-    //     window.URL.revokeObjectURL(url);
-    //     document.body.removeChild(a);
-    //     console.log('Download completed successfully');
-    //   } catch (error) {
-    //     console.error('Error downloading file:', error);
-    //     alert('Failed to download item, please try again');
-    //   }
-    // };
-    
   
     if (loading) {
       return <LoadingAnimation message='Loading LPJ history' />;
-    };
+    }
   
     if (error) {
       return (
         <Typography color="error">
             {error}
-            <br />
-            {/* <Button variant='contained' size='medium' onClick={() => window.location.reload()}>
-                <DownloadIcon />
-            </Button> */}
         </Typography>
       )
     }
@@ -143,7 +94,6 @@ const History: React.FC = () => {
               <TableRow>
                 <TableCell>No. Request</TableCell>
                 <TableCell>Date</TableCell>
-                {/* <TableCell>Actions</TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -151,11 +101,6 @@ const History: React.FC = () => {
                 <TableRow key={item.id}>
                   <TableCell>{item.no_request}</TableCell>
                   <TableCell>{new Date(item.tgl_lpj).toLocaleDateString()}</TableCell>
-                  {/* <TableCell>
-                    <Button onClick={() => handleDownload(item.id)}>
-                      <DownloadIcon />
-                    </Button>
-                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>
