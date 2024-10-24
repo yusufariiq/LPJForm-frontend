@@ -27,8 +27,9 @@ const simpleBarStyles = {
     },
     '.simplebar-track.simplebar-vertical': {
       width: '8px',
-      borderRadius: '4px',
+      borderRadius: '4px',  
     },
+    height: 'calc(100% - 64px)',
 };
 
 interface DrawerContentProps {
