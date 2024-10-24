@@ -1,28 +1,24 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import Drawer from '@mui/material/Drawer';
-import HistoryIcon from '@mui/icons-material/History';
-import IconButton from '@mui/material/IconButton';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import { useState } from 'react';
+
+import {
+  AppBar,
+  Box,
+  CssBaseline,
+  Drawer,
+  IconButton,
+  Toolbar,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
+
 import MenuIcon from '@mui/icons-material/Menu';
-import PostAddIcon from '@mui/icons-material/PostAdd';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import useMediaQuery from '@mui/material/useMediaQuery';
 import LPJForm from '../forms/LPJForm';
 import History from '../tables/History';
+import DrawerContent from '../common/DrawerContent';
 
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
+import { BrowserRouter as Router, Route, Routes, } from 'react-router-dom';
 
-const drawerWidth = 300;
+const drawerWidth = 260;
 
 interface Props {
   window?: () => Window;
@@ -30,45 +26,12 @@ interface Props {
 
 export default function Appbar(props: Props) {
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
-  };
-
-  const DrawerContent = () => {
-    return (
-      <div>
-        <Toolbar sx={{ marginBlock: 2 }}>
-          <img src="bki.png" alt="" height={'80px'} style={{ margin: 'auto' }} />
-        </Toolbar>
-        <Divider />
-        <List>
-          {[
-            { text: 'Add Form', icon: <PostAddIcon fontSize="large" />, path: '/' },
-            { text: 'History', icon: <HistoryIcon fontSize="large" />, path: '/history' },
-          ].map((item) => (
-            <ListItem key={item.text} disablePadding>
-              <ListItemButton
-                component={Link}
-                to={item.path}
-                selected={location.pathname === item.path}
-                onClick={() => isMobile && handleDrawerToggle()}
-              >
-                <ListItemIcon sx={{ marginBlock: 1.5, color: '#1D456A' }}>
-                  {item.icon}
-                </ListItemIcon>
-                <ListItemText>
-                  <Typography variant="h6" sx={{ color: '#1D456A', fontWeight: 'thin' }}>{item.text}</Typography>
-                </ListItemText>
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      </div>
-    );
   };
 
   const container = window !== undefined ? () => window().document.body : undefined;
@@ -81,6 +44,9 @@ export default function Appbar(props: Props) {
           <AppBar
             position="fixed"
             sx={{
+              bgcolor: 'background.paper',
+              color: 'text.primary',
+              boxShadow: 1,
               width: '100%',
             }}
           >
@@ -102,6 +68,7 @@ export default function Appbar(props: Props) {
           sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
           aria-label="mailbox folders"
         >
+          {/* Mobile Drawer */}
           <Drawer
             container={container}
             variant="temporary"
@@ -115,8 +82,13 @@ export default function Appbar(props: Props) {
               '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
             }}
           >
-            <DrawerContent />
+            <DrawerContent 
+              onMobileClose={handleDrawerToggle}
+              isMobile={true}
+            />
           </Drawer>
+
+          {/* Desktop drawer */}
           <Drawer
             variant="permanent"
             sx={{
@@ -125,7 +97,7 @@ export default function Appbar(props: Props) {
             }}
             open
           >
-            <DrawerContent />
+            <DrawerContent isMobile={false}/>
           </Drawer>
         </Box>
         <Box
