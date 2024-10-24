@@ -29,8 +29,6 @@ const simpleBarStyles = {
       width: '8px',
       borderRadius: '4px',
     },
-    height: 'calc(100% - 64px)',
-    overflow: 'auto'
 };
 
 interface DrawerContentProps {
@@ -40,19 +38,12 @@ interface DrawerContentProps {
 
 const menuItems = [
     {
-        name: 'Setting',
+        name: 'Generator',
         categories: [
             { text: 'Add Form', icon: <PostAddIcon />, path: '/' },
             { text: 'History', icon: <HistoryIcon />, path: '/history' },
         ],
     },
-    {
-        name: 'Lainya',
-        categories: [
-            { text: 'Add Form', icon: <PostAddIcon />, path: '/a' },
-            { text: 'History', icon: <HistoryIcon />, path: '/a' },
-        ],
-    }
 ];
 
 const DrawerContent: FC<DrawerContentProps> = ({ onMobileClose, isMobile }) => {
