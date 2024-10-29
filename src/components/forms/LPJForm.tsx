@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Formik, Form, Field, FieldArray } from 'formik';
+import { Formik, Form, Field, FieldArray, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import {
   TextField,
@@ -14,44 +14,10 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import axios from 'axios';
 import LoadingAnimation from '../common/LoadingAnimation';
+import { generateRequestNumber } from '../../utils/helper';
+import { FormValues } from '../../types';
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-export interface RincianItem {
-    id: number;
-    deskripsi_pum: string;
-    jumlah_pum: number;
-    deskripsi_lpj: string;
-    jumlah_lpj: number;
-  }
-  
-  export interface FormValues {
-    no_request: string;
-    nama_pemohon: string;
-    jabatan: string;
-    nama_departemen: string;
-    uraian: string;
-    nama_jenis: string;
-    jml_request: string;
-    jml_terbilang: string;
-    rincianItems: RincianItem[];
-    total_pum: number;
-    total_lpj: number;
-    nama_approve_vpkeu: string;
-    nama_approve_vptre: string;
-    kode_departemen: string;
-    nama_approve_vp: string;
-    tgl_lpj: string;
-  }
-  
-  const generateRequestNumber = () => {
-    const date = new Date();
-    const year = date.getFullYear().toString().substr(-2);
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-    return `REQ-${year}${month}${day}-${random}`;
-  };
   
   const initialValues: FormValues = {
     no_request: generateRequestNumber(),
@@ -108,7 +74,7 @@ export interface RincianItem {
       return () => clearInterval(timer);
     }, []);
     
-     const handleSubmit = async (values: FormValues) => {
+     const handleSubmit = async (values: FormValues, { resetForm }: FormikHelpers<FormValues>) => {
       setIsLoading(true);
       setLoadingMessage('Generating LPJ document...');
       try {
@@ -141,7 +107,21 @@ export interface RincianItem {
         link.href = fileURL;
         link.download = 'LPJ_PUM.pdf';
         link.click();
+        
+        const newRequestNumber = generateRequestNumber();
+        resetForm({
+          values: {
+            ...initialValues,
+            no_request: newRequestNumber,
+            tgl_lpj: new Date().toISOString().split('T')[0]
+          }
+        });
+        setRequestNumber(newRequestNumber);
         setError(null);
+
+        URL.revokeObjectURL(fileURL); 
+        setError(null);
+        resetForm();
       } catch (error) {
         console.error('Error generating document:', error);
         setError('An error occurred while generating the document. Please try again.');
@@ -152,7 +132,7 @@ export interface RincianItem {
   
     return (
       <Container>
-        <Typography variant="h3" gutterBottom>
+        <Typography variant="h4" component="h5" fontWeight={'600'} gutterBottom>
             LPJ Form
         </Typography>
         
@@ -190,7 +170,7 @@ export interface RincianItem {
                   })}
                 </Grid>
   
-                <Typography variant='h4'sx={{ marginTop: 3, marginBottom: 2, fontSize: {xs:'1.25rem', sm:'2.125rem'} }}>
+                <Typography variant='h5' sx={{ marginTop: 3, marginBottom: 2, fontSize: {xs:'24px', sm:'30px'} }}>
                   Rincian Keperluan PUM dan LPJ
                 </Typography>
   

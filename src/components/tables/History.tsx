@@ -15,24 +15,14 @@ import {
   GridToolbarExport,
   GridToolbarDensitySelector,
 } from '@mui/x-data-grid';
+import DownloadIcon from '@mui/icons-material/Download';
 import LoadingAnimation from '../common/LoadingAnimation';
 import axios from 'axios';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';;
+import { handleDownload } from '../../services/api';
+import { LPJHistoryItem } from '../../types';
 
 const API_URL = import.meta.env.VITE_API_URL;
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
-
-interface LPJHistoryItem {
-    id: number;
-    no_request: string;
-    tgl_lpj: string;
-    file_path: string;
-    created_at: string;
-}
   
 const History: React.FC = () => {
     const [history, setHistory] = useState<LPJHistoryItem[]>([]);
@@ -42,7 +32,7 @@ const History: React.FC = () => {
     useEffect(() => {
       const fetchHistory = async () => {
         try {
-          const response = await axios.get(`${API_URL}/lpj-history`);
+          const response = await axios.get(`${API_URL}/history`);
           console.log('API Response:', response.data);
 
           if (Array.isArray(response.data)) {
@@ -79,24 +69,42 @@ const History: React.FC = () => {
         width: 70,
         renderCell: (params) => params.api.getAllRowIds().indexOf(params.id)+1
       },
-      { field: 'no_request', headerName: 'No. Request', width: 450 },
       { 
-          field: 'tgl_lpj', 
-          headerName: 'Date', 
-          width: 250,
-          valueFormatter: (params) => {
-            const date = dayjs(params.value).utc();
-            return date.isValid() ? date.format('YYYY/MM/DD') : 'Invalid Date';
-          }
+        field: 'action', 
+        headerName: 'Action', 
+        width: 100,
+        renderCell: (params) => (
+          <>
+            {params.row.filename && (
+              <Button
+                onClick={() => handleDownload(params.row.filename)}
+                title='Download attachment'
+              >
+                <DownloadIcon />
+              </Button>
+            )}
+          </>
+        )
+      },
+      { field: 'no_request', headerName: 'No. Request', width: 200 },
+      { field: 'filename', headerName: 'File Name', width: 400 },
+      { 
+        field: 'tgl_lpj', 
+        headerName: 'Date', 
+        width: 250,
+        valueGetter: (params) => {
+          const date = dayjs(params);
+          return date.isValid() ? date.format('DD/MM/YYYY') : 'Invalid Date';
+        }
       },
       { 
-          field: 'created_at', 
-          headerName: 'Created At', 
-          width: 250,
-          valueFormatter: (params) => {
-            const date = dayjs(params.value).utc();
-            return date.isValid() ? date.format('YYYY/MM/DD HH:mm:ss') : 'Invalid Date';
-          }
+        field: 'created_at', 
+        headerName: 'Created At', 
+        width: 250,
+        valueGetter: (params) => {
+          const date = dayjs(params);
+          return date.isValid() ? date.format('DD/MM/YYYY HH:mm:ss') : 'Invalid Date';
+        }
       },
   ];
  

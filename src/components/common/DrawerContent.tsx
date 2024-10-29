@@ -20,15 +20,17 @@ import 'simplebar-react/dist/simplebar.min.css';
 import { Link, useLocation } from 'react-router-dom';
 
 const simpleBarStyles = {
-    '.simplebar-scrollbar::before': {
+    '.simplebarScrollbar::before': {
       opacity: 0.1,
       width: '5px',
       right: '2px'
     },
-    '.simplebar-track.simplebar-vertical': {
+    '.simplebarTrack.simplebarVertical': {
       width: '8px',
       borderRadius: '4px',
     },
+    height: 'calc(100% - 64px)',
+    overflow: 'auto'
 };
 
 interface DrawerContentProps {
@@ -38,7 +40,7 @@ interface DrawerContentProps {
 
 const menuItems = [
     {
-        name: 'Generator',
+        name: 'Setting',
         categories: [
             { text: 'Add Form', icon: <PostAddIcon />, path: '/' },
             { text: 'History', icon: <HistoryIcon />, path: '/history' },

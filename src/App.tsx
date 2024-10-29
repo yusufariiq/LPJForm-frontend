@@ -6,7 +6,7 @@ import { CssBaseline } from '@mui/material';
 const theme = createTheme({
   typography: {
     fontFamily: [
-      'Poppins',
+      'Public Sans',
     ].join(','),
   },
 });
@@ -15,9 +15,7 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <div>
         <Appbar />
-      </div>
     </ThemeProvider>
   );
 };
